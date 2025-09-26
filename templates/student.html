@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Student Profile | Student Information System</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+</head>
+<body>
+    <div class="particles-container" id="particles-js"></div>
+    
+    <div class="main-container">
+        <div class="logo-container">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h1 class="app-title">Student Information System</h1>
+        </div>
+        
+        <div class="student-profile">
+            <div class="profile-header">
+                {% if student['Profile Photo'] %}
+                <div class="avatar">
+                    <img src="{{ student['Profile Photo'] }}" alt="{{ student['Name'] }}" class="profile-photo">
+                </div>
+                {% else %}
+                <div class="avatar">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                {% endif %}
+                <h2>Student Profile</h2>
+            </div>
+            
+            <div class="profile-content">
+                {% for key, value in student.items() %}
+                {% if key != 'Profile Photo' %}
+                <div class="detail-item" data-key="{{ key }}">
+                    <div class="detail-icon">
+                        {% if key == 'Enrollment Number' %}
+                            <i class="fas fa-id-card"></i>
+                        {% elif key == 'Name' %}
+                            <i class="fas fa-user"></i>
+                        {% elif key == 'Email ID' %}
+                            <i class="fas fa-envelope"></i>
+                        {% elif key == 'Contact Number' %}
+                            <i class="fas fa-phone"></i>
+                        {% elif key == 'DOB' %}
+                            <i class="fas fa-birthday-cake"></i>
+                        {% elif key == 'Program' %}
+                            <i class="fas fa-graduation-cap"></i>
+                        {% elif key == 'Course' %}
+                            <i class="fas fa-book"></i>
+                        {% elif key == 'Specialisation' %}
+                            <i class="fas fa-star"></i>
+                        {% elif key == 'Father Name' %}
+                            <i class="fas fa-user-friends"></i>
+                        {% elif key == 'Father Occupation' %}
+                            <i class="fas fa-briefcase"></i>
+                        {% else %}
+                            <i class="fas fa-info-circle"></i>
+                        {% endif %}
+                    </div>
+                    <div class="detail-label">{{ key }}</div>
+                    <div class="detail-value">{{ value }}</div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            
+            <div class="action-buttons">
+                <a href="/" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Search</span>
+                </a>
+                <a href="/upload" class="upload-button">
+                    <i class="fas fa-upload"></i>
+                    <span>Upload Profile Photo</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2024 Student Information System | <i class="fas fa-code"></i> <i class="fas fa-graduation-cap"></i> Excellence in Education</p>
+        <p><a href="https://paruluniversity.ac.in/" target="_blank"><i class="fas fa-university"></i> Parul University</a></p>
+        <p>Created by Mayur Mer, Dhanshree Sarode and Manthan Desai</p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Initialize particles background
+        document.addEventListener('DOMContentLoaded', function() {
+            particlesJS("particles-js", {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: "#3498db" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.5, random: false },
+                    size: { value: 3, random: true },
+                    line_linked: { enable: true, distance: 150, color: "#3498db", opacity: 0.4, width: 1 },
+                    move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out", bounce: false }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" } },
+                    modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+                },
+                retina_detect: true
+            });
+            
+            // Animate elements
+            anime({
+                targets: '.logo-container',
+                translateY: [50, 0],
+                opacity: [0, 1],
+                easing: 'easeOutExpo',
+                duration: 1200
+            });
+            
+            // Logo animation
+            anime({
+                targets: '.logo',
+                scale: [0.5, 1],
+                rotate: ['15deg', '0deg'],
+                easing: 'easeOutElastic(1, .5)',
+                duration: 1500,
+                delay: 300
+            });
+            
+            anime({
+                targets: '.student-profile',
+                translateY: [100, 0],
+                opacity: [0, 1],
+                easing: 'easeOutExpo',
+                duration: 1200,
+                delay: 300
+            });
+            
+            // Animate profile items
+            anime({
+                targets: '.detail-item',
+                translateX: [-50, 0],
+                opacity: [0, 1],
+                easing: 'easeOutQuad',
+                duration: 800,
+                delay: anime.stagger(100, {start: 500})
+            });
+            
+            // Animate avatar
+            anime({
+                targets: '.avatar',
+                scale: [0, 1],
+                rotate: ['180deg', '0deg'],
+                easing: 'easeOutElastic(1, .5)',
+                duration: 1500,
+                delay: 300,
+                complete: function() {
+                    // Add a subtle glow effect to the avatar
+                    anime({
+                        targets: '.avatar',
+                        boxShadow: [
+                            '0 8px 25px rgba(67, 97, 238, 0.25)',
+                            '0 8px 35px rgba(67, 97, 238, 0.5)',
+                            '0 8px 25px rgba(67, 97, 238, 0.25)'
+                        ],
+                        easing: 'easeInOutQuad',
+                        duration: 2000,
+                        loop: true
+                    });
+                }
+            });
+            
+            // Back button hover animation
+            const backButton = document.querySelector('.back-button');
+            backButton.addEventListener('mouseenter', function() {
+                anime({
+                    targets: '.back-button i',
+                    translateX: [0, -5],
+                    easing: 'easeOutQuad',
+                    duration: 300
+                });
+            });
+            
+            backButton.addEventListener('mouseleave', function() {
+                anime({
+                    targets: '.back-button i',
+                    translateX: [-5, 0],
+                    easing: 'easeOutQuad',
+                    duration: 300
+                });
+            });
+            
+            // Detail item hover animation
+            const detailItems = document.querySelectorAll('.detail-item');
+            detailItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    anime({
+                        targets: this,
+                        scale: [1, 1.03],
+                        backgroundColor: ['rgba(255, 255, 255, 0.7)', 'rgba(255, 255, 255, 0.9)'],
+                        boxShadow: ['0 5px 15px rgba(0, 0, 0, 0.1)', '0 8px 20px rgba(0, 0, 0, 0.15)'],
+                        easing: 'easeOutQuad',
+                        duration: 300
+                    });
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    anime({
+                        targets: this,
+                        scale: [1.03, 1],
+                        backgroundColor: ['rgba(255, 255, 255, 0.9)', 'rgba(255, 255, 255, 0.7)'],
+                        boxShadow: ['0 8px 20px rgba(0, 0, 0, 0.15)', '0 5px 15px rgba(0, 0, 0, 0.1)'],
+                        easing: 'easeOutQuad',
+                        duration: 300
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Student Information System</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+</head>
+<body>
+    <div class="particles-container" id="particles-js"></div>
+    
+    <div class="main-container">
+        <div class="logo-container">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h1 class="app-title">Student Information System</h1>
+        </div>
+        
+        <div class="center-box">
+            <div class="search-header">
+                <h2><i class="fas fa-search"></i> Find Student</h2>
+            </div>
+            
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="flash" id="flash-message">
+                <i class="fas fa-exclamation-circle"></i> {{ messages[0] }}
+            </div>
+            {% endif %}
+            {% endwith %}
+            
+            <form action="/search" method="post" id="search-form">
+                <div class="input-group">
+                    <i class="fas fa-id-card input-icon"></i>
+                    <input type="text" name="student_id" id="student-id" placeholder="Enter Enrollment Number (e.g. 2203051240127)" autocomplete="off" required />
+                </div>
+                <button type="submit" class="search-button">
+                    <span class="button-text">Search Student</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+            
+            <div class="info-text">
+                <p><i class="fas fa-info-circle"></i> Enter a valid Enrollment Number to view complete details</p>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2024 Student Information System | <i class="fas fa-code"></i> <i class="fas fa-graduation-cap"></i> Excellence in Education</p>
+        <p><a href="https://paruluniversity.ac.in/" target="_blank"><i class="fas fa-university"></i> Parul University</a></p>
+        <p>Created by Mayur Mer, Dhanshree Sarode and Manthan Desai</p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Initialize particles background
+        document.addEventListener('DOMContentLoaded', function() {
+            particlesJS("particles-js", {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: "#3498db" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.5, random: false },
+                    size: { value: 3, random: true },
+                    line_linked: { enable: true, distance: 150, color: "#3498db", opacity: 0.4, width: 1 },
+                    move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out", bounce: false }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" } },
+                    modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+                },
+                retina_detect: true
+            });
+            
+            // Animate elements
+            anime({
+                targets: '.logo-container',
+                translateY: [50, 0],
+                opacity: [0, 1],
+                easing: 'easeOutExpo',
+                duration: 1200
+            });
+            
+            // Logo animation
+            anime({
+                targets: '.logo',
+                scale: [0.5, 1],
+                rotate: ['15deg', '0deg'],
+                easing: 'easeOutElastic(1, .5)',
+                duration: 1500,
+                delay: 300
+            });
+            
+            anime({
+                targets: '.center-box',
+                translateY: [100, 0],
+                opacity: [0, 1],
+                easing: 'easeOutExpo',
+                duration: 1200,
+                delay: 300,
+                complete: function() {
+                    // Add a subtle pulse animation to the search button
+                    anime({
+                        targets: '.search-button',
+                        scale: [1, 1.03, 1],
+                        boxShadow: [
+                            '0 4px 15px rgba(67, 97, 238, 0.35)',
+                            '0 8px 25px rgba(67, 97, 238, 0.5)',
+                            '0 4px 15px rgba(67, 97, 238, 0.35)'
+                        ],
+                        easing: 'easeInOutQuad',
+                        duration: 1500,
+                        delay: 500
+                    });
+                }
+            });
+            
+            // Input focus animation
+            const inputField = document.getElementById('student-id');
+            inputField.addEventListener('focus', function() {
+                anime({
+                    targets: '.input-group',
+                    scale: [1, 1.03],
+                    boxShadow: ['0 0 0 rgba(52, 152, 219, 0)', '0 0 15px rgba(52, 152, 219, 0.5)'],
+                    duration: 300,
+                    easing: 'easeOutQuad'
+                });
+            });
+            
+            inputField.addEventListener('blur', function() {
+                anime({
+                    targets: '.input-group',
+                    scale: [1.03, 1],
+                    boxShadow: ['0 0 15px rgba(52, 152, 219, 0.5)', '0 0 0 rgba(52, 152, 219, 0)'],
+                    duration: 300,
+                    easing: 'easeOutQuad'
+                });
+            });
+            
+            // Button hover animation
+            const searchButton = document.querySelector('.search-button');
+            searchButton.addEventListener('mouseenter', function() {
+                anime({
+                    targets: '.search-button i',
+                    translateX: [0, 5],
+                    opacity: [0.5, 1],
+                    easing: 'easeOutQuad',
+                    duration: 300
+                });
+            });
+            
+            searchButton.addEventListener('mouseleave', function() {
+                anime({
+                    targets: '.search-button i',
+                    translateX: [5, 0],
+                    opacity: [1, 0.5],
+                    easing: 'easeOutQuad',
+                    duration: 300
+                });
+            });
+            
+            // Form submission animation
+            document.getElementById('search-form').addEventListener('submit', function() {
+                anime({
+                    targets: '.center-box',
+                    translateY: [0, 20],
+                    opacity: [1, 0],
+                    easing: 'easeInQuad',
+                    duration: 300
+                });
+            });
+            
+            // Flash message animation if present
+            const flashMessage = document.getElementById('flash-message');
+            if (flashMessage) {
+                anime({
+                    targets: '#flash-message',
+                    translateX: [-20, 0],
+                    opacity: [0, 1],
+                    easing: 'easeOutElastic',
+                    duration: 800,
+                    delay: 300
+                });
+                
+                // Auto-hide flash message after 5 seconds
+                setTimeout(function() {
+                    anime({
+                        targets: '#flash-message',
+                        opacity: [1, 0],
+                        height: [flashMessage.offsetHeight, 0],
+                        marginTop: [16, 0],
+                        marginBottom: [16, 0],
+                        paddingTop: [8, 0],
+                        paddingBottom: [8, 0],
+                        easing: 'easeInOutQuad',
+                        duration: 500,
+                        complete: function() {
+                            flashMessage.style.display = 'none';
+                        }
+                    });
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>
