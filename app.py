@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-import pandas as pd
 import os
 from werkzeug.utils import secure_filename
 from upload_handler import handle_photo_upload
+import openpyxl
 
 
 app = Flask(__name__)
@@ -18,9 +18,26 @@ PHOTO_COLUMN = 'Profile Photo' # column name for student profile photos
 
 def load_students():
     try:
-        df = pd.read_excel(EXCEL_FILE, engine='openpyxl', dtype=str)
-        df.fillna('', inplace=True)
-        return df
+        # Load the workbook and get the active sheet
+        workbook = openpyxl.load_workbook(EXCEL_FILE)
+        sheet = workbook.active
+        
+        # Get headers from the first row
+        headers = [cell.value for cell in sheet[1]]
+        
+        # Create a dictionary to store all student data
+        students_data = []
+        
+        # Iterate through rows (starting from row 2, as row 1 contains headers)
+        for row in sheet.iter_rows(min_row=2, values_only=True):
+            # Create a dictionary for each student
+            student = {}
+            for i, value in enumerate(row):
+                # Convert None to empty string
+                student[headers[i]] = str(value) if value is not None else ''
+            students_data.append(student)
+            
+        return students_data
     except Exception as e:
         print(f"Error loading Excel file: {e}")
         return None
@@ -43,27 +60,28 @@ def search():
         flash('Please enter a student ID.')
         return redirect(url_for('index'))
 
-    df = load_students()
-    if df is None:
+    students = load_students()
+    if students is None:
         flash('Database file not found. Make sure students.xlsx exists.')
         return redirect(url_for('index'))
 
-    # Find row(s) with matching ID (exact match)
-    match = df[df[ID_COLUMN].astype(str).str.strip() == student_id]
+    # Find student with matching ID (exact match)
+    match = None
+    for student in students:
+        if student[ID_COLUMN].strip() == student_id:
+            match = student
+            break
 
-    if match.empty:
+    if match is None:
         flash('Student not found.')
         return redirect(url_for('index'))
 
-    # Convert first matched row to a dict of text
-    row = match.iloc[0].astype(str).to_dict()
-    
     # Format DOB to remove time component if it exists
-    if 'DOB' in row and '00:00:00' in row['DOB']:
-        row['DOB'] = row['DOB'].split(' ')[0]
+    if 'DOB' in match and '00:00:00' in match['DOB']:
+        match['DOB'] = match['DOB'].split(' ')[0]
 
     # Redirect to student page passing data via POST-redirect is non-trivial, so render template directly
-    return render_template('student.html', student=row)
+    return render_template('student.html', student=match)
 
 
 

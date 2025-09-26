@@ -1,5 +1,5 @@
 import os
-import pandas as pd
+import openpyxl
 from flask import Flask, request, redirect, url_for, flash, render_template
 from werkzeug.utils import secure_filename
 
@@ -55,21 +55,33 @@ def handle_photo_upload(app):
                 # Update the Excel file with the photo path
                 try:
                     # Load the Excel file
-                    df = pd.read_excel(EXCEL_FILE, engine='openpyxl', dtype=str)
+                    workbook = openpyxl.load_workbook(EXCEL_FILE)
+                    sheet = workbook.active
+                    
+                    # Get headers from the first row
+                    headers = [cell.value for cell in sheet[1]]
+                    
+                    # Find the column indices for ID and photo
+                    id_col_idx = headers.index(ID_COLUMN) + 1  # +1 because openpyxl is 1-indexed
+                    photo_col_idx = headers.index(PHOTO_COLUMN) + 1
                     
                     # Find the student by ID
-                    mask = df[ID_COLUMN].astype(str).str.strip() == student_id
-                    if not mask.any():
+                    student_found = False
+                    for row_idx, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
+                        if str(row[id_col_idx - 1]).strip() == student_id:
+                            student_found = True
+                            # Use relative path for web access
+                            relative_path = os.path.join(UPLOAD_FOLDER, filename).replace('\\', '/')
+                            # Update the photo path in the sheet
+                            sheet.cell(row=row_idx, column=photo_col_idx).value = relative_path
+                            break
+                    
+                    if not student_found:
                         flash('Student not found.')
                         return redirect(url_for('upload_photo'))
                     
-                    # Update the photo path in the dataframe
-                    # Use relative path for web access
-                    relative_path = os.path.join(UPLOAD_FOLDER, filename).replace('\\', '/')
-                    df.loc[mask, PHOTO_COLUMN] = relative_path
-                    
-                    # Save the updated dataframe back to Excel
-                    df.to_excel(EXCEL_FILE, index=False, engine='openpyxl')
+                    # Save the updated workbook back to Excel
+                    workbook.save(EXCEL_FILE)
                     
                     flash('Profile photo uploaded successfully!')
                     return redirect(url_for('index'))
