@@ -1,7 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import os
-from werkzeug.utils import secure_filename
-from upload_handler import handle_photo_upload
 import openpyxl
 
 
@@ -11,7 +9,6 @@ app.secret_key = 'change-this-to-a-random-secret'
 
 EXCEL_FILE = 'students.xlsx'
 ID_COLUMN = 'Enrollment Number' # column name in the excel which holds unique IDs
-PHOTO_COLUMN = 'Profile Photo' # column name for student profile photos
 
 
 
@@ -82,18 +79,6 @@ def search():
 
     # Redirect to student page passing data via POST-redirect is non-trivial, so render template directly
     return render_template('student.html', student=match)
-
-
-
-
-# Add route to display the upload photo form
-@app.route('/upload', methods=['GET'])
-def upload():
-    return render_template('upload_photo.html')
-
-
-# Initialize the photo upload handler
-handle_photo_upload(app)
 
 
 if __name__ == '__main__':

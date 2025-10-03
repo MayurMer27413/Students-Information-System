@@ -21,15 +21,9 @@
         
         <div class="student-profile">
             <div class="profile-header">
-                {% if student['Profile Photo'] %}
-                <div class="avatar">
-                    <img src="{{ student['Profile Photo'] }}" alt="{{ student['Name'] }}" class="profile-photo">
-                </div>
-                {% else %}
                 <div class="avatar">
                     <i class="fas fa-user-graduate"></i>
                 </div>
-                {% endif %}
                 <h2>Student Profile</h2>
             </div>
             
@@ -73,10 +67,6 @@
                 <a href="/" class="back-button">
                     <i class="fas fa-arrow-left"></i>
                     <span>Back to Search</span>
-                </a>
-                <a href="/upload" class="upload-button">
-                    <i class="fas fa-upload"></i>
-                    <span>Upload Profile Photo</span>
                 </a>
             </div>
         </div>
