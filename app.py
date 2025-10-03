@@ -1,13 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import os
 import openpyxl
+from pathlib import Path
 
 
 app = Flask(__name__)
-app.secret_key = 'change-this-to-a-random-secret'
+app.secret_key = os.environ.get('SECRET_KEY', 'change-this-to-a-random-secret')
 
-
-EXCEL_FILE = 'students.xlsx'
+# Get the absolute path to the Excel file
+BASE_DIR = Path(__file__).resolve().parent
+EXCEL_FILE = os.path.join(BASE_DIR, 'students.xlsx')
 ID_COLUMN = 'Enrollment Number' # column name in the excel which holds unique IDs
 
 
@@ -30,8 +32,9 @@ def load_students():
             # Create a dictionary for each student
             student = {}
             for i, value in enumerate(row):
-                # Convert None to empty string
-                student[headers[i]] = str(value) if value is not None else ''
+                if i < len(headers):  # Ensure we don't go out of bounds
+                    # Convert None to empty string
+                    student[headers[i]] = str(value) if value is not None else ''
             students_data.append(student)
             
         return students_data
